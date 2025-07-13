@@ -34,42 +34,57 @@ export default function App() {
           );
           case 'reminders':
             return (
-              
-            )
+              <View style={styles.contentBox}>
+                <Text style={styles.tabTitle}>🔔 Reminders</Text>
+                <Text style={styles.tabContent}>Set a reminder here.</Text>
+              </View>
+            );
+            case 'wins':
+              return (
+                <View style={styles.contentBox}>
+                  <Text style={styles.tabTitle}>✅ Wins</Text>
+                  <Text style={styles.tabContent}>Each win is one step closer!</Text>
+                  </View>
+              );
+              default:
+              return null;
     }
-  }
+  };
 
   return (
     <View style={styles.container}>
-    {/*(Top Bar Menu */}
-    <View style={styles.topBar}>
-      <TouchableOpacity onPress={toggleMenu}>
-        <Text style={styles.menuIcon}>☰</Text>
+      {/* ☰ Top Bar */}
+      <View style={styles.topBar}>
+        <TouchableOpacity onPress={toggleMenu}>
+          <Text style={styles.menuIcon}>☰</Text>
         </TouchableOpacity>
-        </View>
-        
-        {/* Welcome message */}
-        <Text style={styles.welcome}> Nice seeing you!</Text>
+      </View>
 
-        {/* Menu */}
-        {menuVisible && (
-          <View style={styles.menu}>
-            <TouchableOpacity style={styles.menuItem}>
+      {/* Welcome message */}
+      <Text style={styles.welcome}>Nice seeing you!</Text>
+
+      {/* Menu */}
+      {menuVisible && (
+        <View style={styles.menu}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => openTab('brain')}>
             <Text>🧩 Brain Waker</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem}>
-              <Text>🛒 New Hobbies</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem}>
-              <Text>🔔 Reminders</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem}>
-              <Text>✅ Wins</Text>
-            </TouchableOpacity>
-            </View>
-        )}
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menuItem} onPress={() => openTab('hobbies')}>
+            <Text>🛒 New Hobbies</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menuItem} onPress={() => openTab('reminders')}>
+            <Text>🔔 Reminders</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menuItem} onPress={() => openTab('wins')}>
+            <Text>✅ Wins</Text>
+          </TouchableOpacity>
         </View>
-  )
+      )}
+
+      {/* Tab content */}
+      {renderTabContent()}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -77,7 +92,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#eef2f7',
     padding: 20,
-    justifyContent: 'center',
+    paddingTop: 80,
   },
   topBar: {
     position: 'absolute',
@@ -93,12 +108,25 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   menu: {
-    marginTop: 20,
+    marginBottom: 20,
   },
   menuItem: {
     padding: 12,
     backgroundColor: '#fff',
     borderRadius: 10,
     marginBottom: 10,
+  },
+  contentBox: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 16,
+  },
+  tabTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  tabContent: {
+    fontSize: 16,
   },
 });
