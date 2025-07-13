@@ -3,6 +3,8 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 
 export default function App() {
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [matchedUser, setMatchedUser] = useState<{ name: string; interest: string } | null>(null);
   const [menuVisible, setMenuVisible] = useState(false);
   const [activeTab, setActiveTab] = useState<string | null>(null); //tracks open tab
 
@@ -13,6 +15,20 @@ export default function App() {
   const openTab = (tabName: string) => {
     setActiveTab(tabName);
     setMenuVisible(false); // auto closes menu
+  };
+
+  const startMatching = () => {
+    setIsConnecting(true);
+    setMatchedUser(null);
+
+    //fake loading and matching
+    setTimeout(() => {
+      setMatchedUser({
+        name: 'Nomi',
+        interest: 'food',
+      });
+      setIsConnecting(false);
+    }, 3000); //3s delay
   };
 
   const renderTabContent = () => {
@@ -46,6 +62,27 @@ export default function App() {
                   <Text style={styles.tabContent}>Each win is one step closer!</Text>
                   </View>
               );
+              case 'connect':
+                return (
+                  <View style={styles.contentBox}>
+                    <Text style={styles.tabTitle}>🫂 Auding Together</Text>
+                      {isConnecting ? (
+                        <Text style={styles.tabContent}>🔍 Looking for someone to match you with...</Text>
+                      ) : matchedUser ? (
+                        <View>
+                          <Text style={styles.tabContent}>
+                            🎉 You’ve been matched with: <Text style={{ fontWeight: 'bold' }}>{matchedUser.name}</Text>
+                          </Text>
+                          <Text style={styles.tabContent}>They're also interested in: {matchedUser.interest}</Text>
+                        </View>
+                      ) : (
+                        <TouchableOpacity style={styles.connectButton} onPress={startMatching}>
+                          <Text style={{ color: 'green', textAlign: 'center' }}>Find Someone to Talk To</Text>
+                        </TouchableOpacity>
+                      )}
+                    <Text style={styles.tabContent}>Share experiences and idea's.</Text>
+                  </View>
+                )
               default:
               return null;
     }
@@ -77,6 +114,9 @@ export default function App() {
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => openTab('wins')}>
             <Text>✅ Wins</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menuItem} onPress={() => openTab('connect')}>
+            <Text>🫂 Auding Together</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -121,6 +161,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 16,
   },
+  connectButton: {
+  marginTop: 10,
+  backgroundColor: '#5A67D8',
+  padding: 12,
+  borderRadius: 10,
+},
   tabTitle: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -129,4 +175,5 @@ const styles = StyleSheet.create({
   tabContent: {
     fontSize: 16,
   },
+  
 });
