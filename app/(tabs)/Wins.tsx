@@ -1,110 +1,164 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useEffect, useState } from 'react';
+import {
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from 'react-native';
 
-import { Collapsible } from '@/components/Collapsible';
-import { ExternalLink } from '@/components/ExternalLink';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { IconSymbol } from '@/components/ui/IconSymbol';
+type Win = {
+    id: string;
+    author: string;
+    content: string;
+    timestamp: number;
+};
 
-export default function TabTwoScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="chevron.left.forwardslash.chevron.right"
-          style={styles.headerImage}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Explore</ThemedText>
-      </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image source={require('@/assets/images/react-logo.png')} style={{ alignSelf: 'center' }} />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Custom fonts">
-        <ThemedText>
-          Open <ThemedText type="defaultSemiBold">app/_layout.tsx</ThemedText> to see how to load{' '}
-          <ThemedText style={{ fontFamily: 'SpaceMono' }}>
-            custom fonts such as this one.
-          </ThemedText>
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/versions/latest/sdk/font">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user&apos;s current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful <ThemedText type="defaultSemiBold">react-native-reanimated</ThemedText>{' '}
-          library to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
-      </Collapsible>
-    </ParallaxScrollView>
-  );
+const STORAGE_KEY = ' communityWins';
+
+export default function Wins() { 
+    const [newWinText, setNewWinText] = useState('');
+    const [globalWins, setGlobalWins] = useState<Win[]>([]);
+//Load upon first render
+    useEffect(() => {
+        const loadWins = async () => {
+            try {
+                const json = await AsyncStorage.getItem(STORAGE_KEY);
+                if (json) {
+                    setGlobalWins(JSON.parse(json));
+                }
+            } catch (error) {
+                console.error('Failed to retrieve wins:', error);
+            }
+        };
+    loadWins();
+    }, []);
+//save changes to global
+    useEffect(() => {
+        const saveWins = async () => {
+            try {
+                await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(globalWins));
+            } catch (error) {
+                console.error('Failed to save wins:', error);
+            }
+        };
+        saveWins();
+    }, [globalWins]);
+
+    const postWin = () => {
+        if (newWinText.trim() === '' ) return;
+        const newWin: Win = {
+            id: Date.now().toString(),
+            author: 'You', //placehold rn
+            content: newWinText.trim(),
+            timestamp: Date.now(),
+        };
+        setGlobalWins([newWin, ...globalWins]);
+        setNewWinText('');
+    };
+
+    return (
+        <View style={styles.container}>
+            <Text style={styles.title}>✅Overview of wins!</Text>
+
+            <TextInput
+            style={styles.input}
+            placeholder="Share your most recent win!"
+            value={newWinText}
+            onChangeText={setNewWinText}
+            multiline
+            />
+
+            <TouchableOpacity style={styles.button} onPress={postWin}>
+                <Text style={styles.buttonText}>Post your win here!</Text>
+            </TouchableOpacity>
+
+            <Text style={styles.subheading}>🌍 Community Wins</Text>
+
+            <ScrollView style={styles.scrollArea}>
+                {globalWins.length === 0 ? (
+                    <Text style={{ textAlign: 'center', marginTop: 20 }}>
+                        No wins shared yet - share yours now 💪
+                    </Text>
+                ) : (
+                    globalWins.map((win) => (
+                        <View key={win.id} style={styles.winCard}>
+                            <Text style={styles.author}>{win.author}</Text>
+                            <Text style={styles.winText}>{win.content}</Text>
+                            <Text style={styles.timestamp}>
+                                {new Date(win.timestamp).toLocaleString()}
+                            </Text>
+                        </View>
+                    ))
+                )}
+            </ScrollView>
+        </View>
+    );
 }
-
 const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
+  container: {
+    flex: 1,
+    paddingTop: 60,
+    paddingHorizontal: 20,
+    backgroundColor: '#f0f4f8',
   },
-  titleContainer: {
-    flexDirection: 'row',
-    gap: 8,
+  title: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  input: {
+    backgroundColor: '#fff',
+    padding: 12,
+    borderRadius: 10,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    minHeight: 60,
+    marginBottom: 10,
+  },
+  button: {
+    backgroundColor: '#4CAF50',
+    padding: 12,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  subheading: {
+    fontSize: 18,
+    marginBottom: 10,
+  },
+  scrollArea: {
+    flex: 1,
+  },
+  winCard: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 14,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  author: {
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  winText: {
+    fontSize: 16,
+    marginBottom: 6,
+  },
+  timestamp: {
+    fontSize: 10,
+    color: 'gray',
+    textAlign: 'right',
   },
 });
