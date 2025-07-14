@@ -2,6 +2,31 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 
+function BrainWaker() {
+  const [showAnswer, setShowAnswer] = useState(false);
+
+  const PUZZLE = {
+    question: 'nomi',
+    answer: 'food',
+  };
+  return(
+    <View style={styles.contentBox}>
+      <Text style={styles.tabTitle}>🧩 Brain Waker</Text>
+      <Text style={styles.tabContent}>{PUZZLE.question}</Text>
+
+      <TouchableOpacity
+      style={styles.revealButton}
+      onPress={() => setShowAnswer(true)}
+      disabled={showAnswer}
+      >
+        <Text style={styles.revealText}>
+          {showAnswer ? `Answer: ${PUZZLE.answer}` : 'Reveal Answer'}
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
 export default function App() {
   const [isConnecting, setIsConnecting] = useState(false);
   const [matchedUser, setMatchedUser] = useState<{ name: string; interest: string } | null>(null);
@@ -34,13 +59,7 @@ export default function App() {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'brain':
-        return (
-          <View style={styles.contentBox}>
-            <Text style={styles.tabTitle}>🧩 Brain Waker</Text>
-            <Text style={styles.tabContent}>Heres a puzzle</Text>
-            <Text style={{marginTop: 10, fontStyle: 'italic'}}> Tap to reveal answer</Text>
-          </View>
-        );
+        return <BrainWaker />;
         case 'hobbies':
           return (
             <View style={styles.contentBox}>
@@ -55,13 +74,6 @@ export default function App() {
                 <Text style={styles.tabContent}>Set a reminder here.</Text>
               </View>
             );
-            case 'wins':
-              return (
-                <View style={styles.contentBox}>
-                  <Text style={styles.tabTitle}>✅ Wins</Text>
-                  <Text style={styles.tabContent}>Each win is one step closer!</Text>
-                  </View>
-              );
               case 'connect':
                 return (
                   <View style={styles.contentBox}>
@@ -111,9 +123,6 @@ export default function App() {
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => openTab('reminders')}>
             <Text>🔔 Reminders</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => openTab('wins')}>
-            <Text>✅ Wins</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => openTab('connect')}>
             <Text>🫂 Auding Together</Text>
@@ -175,5 +184,15 @@ const styles = StyleSheet.create({
   tabContent: {
     fontSize: 16,
   },
-  
+    revealButton: {
+    backgroundColor: '#5A67D8',
+    padding: 12,
+    borderRadius: 10,
+    marginTop: 12,
+  },
+  revealText: {
+    color: 'white',
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },  
 });
