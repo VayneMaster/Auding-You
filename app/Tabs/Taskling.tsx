@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+import { v4 as uuidv4 } from 'uuid'; //npm install uuid thuis
+
 
 //Task database
 const TASK_DATABASE = [
@@ -19,6 +21,9 @@ const TASK_DATABASE = [
   'Sleep 7 hours'
 ];
 
+const CURRENT_ENTLING_KEY = '@current_entling';
+const ENTLING_FARM_KEY = '@entling_farm'
+
 function getDailyTasks(seed: number = new Date().getDate()) {
   //Retrun 3 tasked based on date
   const shuffled = [...TASK_DATABASE].sort((a, b) =>
@@ -27,46 +32,75 @@ function getDailyTasks(seed: number = new Date().getDate()) {
   return shuffled.slice(0, 3);
 }
 
-const STORAGE_KEY = '@daily_tasks';
+type Entling = {
+  id: string;
+  createdAt: string;
+  completedTasks: string[];
+  fullyGrown: boolean;
+};
 
 export default function Taskling(){
     const [tasks, setTasks] = useState<string[]>([]);
-    
+    const [entling, setEntling] = useState<Entling | null>(null);
     const [today, setToday] = useState<number>(new Date().getDate());
 
   useEffect(() => {
-    const loadTasks = async () => {
-      const saved = await   AsyncStorage.getItem(STORAGE_KEY);
-      const date = new Date().getDate();
-      if (saved) {
-        const { day, tasks: savedTasks } = JSON.parse(saved);
-        if (day === date) {
-          setTasks(savedTasks); //If exit, restore tasks
-          setToday(day);
-          return;
-        }
-      }
-      //new day/no tasks saved
-      const freshTasks = getDailyTasks(date);
-      setTasks(freshTasks);
-      setToday(date);
-      await AsyncStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify({ day: date, tasks: freshTasks})
-      );
-    };
-    loadTasks();
+    loadData();
   }, []);
 
-  const completeTask = async (index: number) => {
-    const copy = [...tasks];
-    copy.splice(index, 1);
-    setTasks(copy);
+  const loadData = async () => {
+    const date = new Date().getDate();
+    setToday(date);
 
-    await AsyncStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({ day: today, tasks: copy})
-    );
+    let currentEntling = await AsyncStorage.getItem(CURRENT_ENTLING_KEY);
+    if (currentEntling) {
+      const parsed = JSON.parse(currentEntling) as Entling;
+      if (!parsed.fullyGrown) {
+        setEntling(parsed);
+        return;
+      }
+    }
+
+    //New Entinling
+    const newEntling: Entling = {
+      id: uuidv4(),
+      createdAt: new Date().toISOString(),
+      completedTasks: [],
+      fullyGrown: false,
+    };
+
+    await AsyncStorage.setItem(CURRENT_ENTLING_KEY, JSON.stringify(newEntling));
+    setEntling(newEntling);
+
+    const dailyTasks = getDailyTasks(date);
+    setTasks(dailyTasks);
+  };
+
+  const completeTask = async (index: number) => {
+    const updatedTasks = [...tasks];
+    const taskDone = updatedTasks.splice(index, 1)[0];
+    setTasks(updatedTasks);
+
+    if (!entling) return;
+
+    const updatedEntling: Entling = {
+      ...entling,
+      completedTasks: [...entling.completedTasks, taskDone],
+    };
+
+    const isFullyGrown = updatedEntling.completedTasks.length >= 3;
+    if (isFullyGrown) {
+      updatedEntling.fullyGrown = true;
+
+      // Save to farm
+      const farmRaw = await AsyncStorage.getItem(ENTLING_FARM_KEY);
+      const farm = farmRaw ? JSON.parse(farmRaw) : [];
+      farm.push(updatedEntling);
+      await AsyncStorage.setItem(ENTLING_FARM_KEY, JSON.stringify(farm));
+    }
+
+    await AsyncStorage.setItem(CURRENT_ENTLING_KEY, JSON.stringify(updatedEntling));
+    setEntling(updatedEntling);
   };
 
   const growthStage = tasks.length === 3
@@ -104,7 +138,12 @@ export default function Taskling(){
     
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, backgroundColor: '#f6fff7' },
-  title: { fontSize: 22, fontWeight: '600', textAlign: 'center', marginBottom: 10 },
+  title: {
+    fontSize: 22,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
   stage: { fontSize: 18, textAlign: 'center', marginBottom: 20 },
   task: {
     backgroundColor: 'white',
