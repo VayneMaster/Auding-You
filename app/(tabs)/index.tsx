@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import HomeDashboard from './HomeDashboard';
 
 function BrainWaker() {
   const [showAnswer, setShowAnswer] = useState(false);
@@ -70,8 +71,8 @@ export default function App() {
             </Text>
           </View>
         );
-      default:
-        return null;
+      case null:
+        return <HomeDashboard />;
     }
   };
 
