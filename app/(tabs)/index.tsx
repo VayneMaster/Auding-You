@@ -1,23 +1,23 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-
 function BrainWaker() {
   const [showAnswer, setShowAnswer] = useState(false);
 
   const PUZZLE = {
-    question: 'nomi',
-    answer: 'food',
+    question: 'What has keys but can’t open locks?',
+    answer: 'A piano 🎹',
   };
-  return(
+
+  return (
     <View style={styles.contentBox}>
       <Text style={styles.tabTitle}>🧩 Brain Waker</Text>
       <Text style={styles.tabContent}>{PUZZLE.question}</Text>
 
       <TouchableOpacity
-      style={styles.revealButton}
-      onPress={() => setShowAnswer(true)}
-      disabled={showAnswer}
+        style={styles.revealButton}
+        onPress={() => setShowAnswer(true)}
+        disabled={showAnswer}
       >
         <Text style={styles.revealText}>
           {showAnswer ? `Answer: ${PUZZLE.answer}` : 'Reveal Answer'}
@@ -28,10 +28,8 @@ function BrainWaker() {
 }
 
 export default function App() {
-  const [isConnecting, setIsConnecting] = useState(false);
-  const [matchedUser, setMatchedUser] = useState<{ name: string; interest: string } | null>(null);
   const [menuVisible, setMenuVisible] = useState(false);
-  const [activeTab, setActiveTab] = useState<string | null>(null); //tracks open tab
+  const [activeTab, setActiveTab] = useState<string | null>(null);
 
   const toggleMenu = () => {
     setMenuVisible(!menuVisible);
@@ -39,64 +37,41 @@ export default function App() {
 
   const openTab = (tabName: string) => {
     setActiveTab(tabName);
-    setMenuVisible(false); // auto closes menu
-  };
-
-  const startMatching = () => {
-    setIsConnecting(true);
-    setMatchedUser(null);
-
-    //fake loading and matching
-    setTimeout(() => {
-      setMatchedUser({
-        name: 'Nomi',
-        interest: 'food',
-      });
-      setIsConnecting(false);
-    }, 3000); //3s delay
+    setMenuVisible(false);
   };
 
   const renderTabContent = () => {
     switch (activeTab) {
       case 'brain':
         return <BrainWaker />;
-        case 'hobbies':
-          return (
-            <View style={styles.contentBox}>
-              <Text style={styles.tabTitle}>🛒 New Hobbies</Text>
-              <Text style={styles.tabContent}>Will it be your new hobby, or not yet?</Text>
-            </View>
-          );
-          case 'reminders':
-            return (
-              <View style={styles.contentBox}>
-                <Text style={styles.tabTitle}>🔔 Reminders</Text>
-                <Text style={styles.tabContent}>Set a reminder here.</Text>
-              </View>
-            );
-              case 'connect':
-                return (
-                  <View style={styles.contentBox}>
-                    <Text style={styles.tabTitle}>🫂 Auding Together</Text>
-                      {isConnecting ? (
-                        <Text style={styles.tabContent}>🔍 Looking for someone to match you with...</Text>
-                      ) : matchedUser ? (
-                        <View>
-                          <Text style={styles.tabContent}>
-                            🎉 You’ve been matched with: <Text style={{ fontWeight: 'bold' }}>{matchedUser.name}</Text>
-                          </Text>
-                          <Text style={styles.tabContent}>They're also interested in: {matchedUser.interest}</Text>
-                        </View>
-                      ) : (
-                        <TouchableOpacity style={styles.connectButton} onPress={startMatching}>
-                          <Text style={{ color: 'green', textAlign: 'center' }}>Find Someone to Talk To</Text>
-                        </TouchableOpacity>
-                      )}
-                    <Text style={styles.tabContent}>Share experiences and idea's.</Text>
-                  </View>
-                )
-              default:
-              return null;
+      case 'hobbies':
+        return (
+          <View style={styles.contentBox}>
+            <Text style={styles.tabTitle}>🛒 New Hobbies</Text>
+            <Text style={styles.tabContent}>Will it be your new hobby, or not yet?</Text>
+          </View>
+        );
+      case 'reminders':
+        return (
+          <View style={styles.contentBox}>
+            <Text style={styles.tabTitle}>🔔 Reminders</Text>
+            <Text style={styles.tabContent}>Set a reminder here.</Text>
+          </View>
+        );
+      case 'wins':
+        return (
+          <View style={styles.contentBox}>
+            <Text style={styles.tabTitle}>🏆 Wins</Text>
+            <Text style={styles.tabContent}>
+              Share your wins with the community! Whether it's a small step or a big goal reached — it counts.
+            </Text>
+            <Text style={{ marginTop: 10, fontStyle: 'italic' }}>
+              This will be a forum-like space in the future.
+            </Text>
+          </View>
+        );
+      default:
+        return null;
     }
   };
 
@@ -124,8 +99,8 @@ export default function App() {
           <TouchableOpacity style={styles.menuItem} onPress={() => openTab('reminders')}>
             <Text>🔔 Reminders</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => openTab('connect')}>
-            <Text>🫂 Auding Together</Text>
+          <TouchableOpacity style={styles.menuItem} onPress={() => openTab('wins')}>
+            <Text>🏆 Wins</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -170,12 +145,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 16,
   },
-  connectButton: {
-  marginTop: 10,
-  backgroundColor: '#5A67D8',
-  padding: 12,
-  borderRadius: 10,
-},
   tabTitle: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -184,7 +153,7 @@ const styles = StyleSheet.create({
   tabContent: {
     fontSize: 16,
   },
-    revealButton: {
+  revealButton: {
     backgroundColor: '#5A67D8',
     padding: 12,
     borderRadius: 10,
@@ -194,5 +163,5 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
     fontWeight: 'bold',
-  },  
+  },
 });
