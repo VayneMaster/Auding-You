@@ -1,16 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import {
+  Alert,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
-import { v4 as uuidv4 } from 'uuid'; //npm install uuid thuis
+import { v4 as uuidv4 } from 'uuid'; // npm install uuid
 
-
-//Task database
+// Constants
 const TASK_DATABASE = [
   'Take a walk',
   'Do the dishes',
@@ -18,20 +18,14 @@ const TASK_DATABASE = [
   'Grab a drink',
   'Check the cat',
   'Eat a banana',
-  'Sleep 7 hours'
+  'Sleep 7 hours',
 ];
 
 const CURRENT_ENTLING_KEY = '@current_entling';
-const ENTLING_FARM_KEY = '@entling_farm'
+const ENTLING_FARM_KEY = '@entling_farm';
+const DAILY_TASKS_KEY = '@daily_tasks';
 
-function getDailyTasks(seed: number = new Date().getDate()) {
-  //Retrun 3 tasked based on date
-  const shuffled = [...TASK_DATABASE].sort((a, b) =>
-  (a + seed).localeCompare(b + seed)
-  );
-  return shuffled.slice(0, 3);
-}
-
+// Types
 type Entling = {
   id: string;
   createdAt: string;
@@ -39,10 +33,18 @@ type Entling = {
   fullyGrown: boolean;
 };
 
-export default function Taskling(){
-    const [tasks, setTasks] = useState<string[]>([]);
-    const [entling, setEntling] = useState<Entling | null>(null);
-    const [today, setToday] = useState<number>(new Date().getDate());
+// Generate deterministic daily tasks
+function getDailyTasks(seed: number = new Date().getDate()) {
+  const shuffled = [...TASK_DATABASE].sort((a, b) =>
+    (a + seed).localeCompare(b + seed)
+  );
+  return shuffled.slice(0, 3);
+}
+
+export default function Taskling() {
+  const [tasks, setTasks] = useState<string[]>([]);
+  const [entling, setEntling] = useState<Entling | null>(null);
+  const [today, setToday] = useState<number>(new Date().getDate());
 
   useEffect(() => {
     loadData();
@@ -52,42 +54,81 @@ export default function Taskling(){
     const date = new Date().getDate();
     setToday(date);
 
-    let currentEntling = await AsyncStorage.getItem(CURRENT_ENTLING_KEY);
-    if (currentEntling) {
-      const parsed = JSON.parse(currentEntling) as Entling;
+    // 1. Load or create Entling
+    let currentEntlingRaw = await AsyncStorage.getItem(CURRENT_ENTLING_KEY);
+    let currentEntling: Entling;
+
+    if (currentEntlingRaw) {
+      const parsed = JSON.parse(currentEntlingRaw) as Entling;
       if (!parsed.fullyGrown) {
         setEntling(parsed);
+      } else {
+        // Fully grown, make a new one
+        currentEntling = {
+          id: uuidv4(),
+          createdAt: new Date().toISOString(),
+          completedTasks: [],
+          fullyGrown: false,
+        };
+        await AsyncStorage.setItem(
+          CURRENT_ENTLING_KEY,
+          JSON.stringify(currentEntling)
+        );
+        setEntling(currentEntling);
+      }
+    } else {
+      // No entling yet
+      currentEntling = {
+        id: uuidv4(),
+        createdAt: new Date().toISOString(),
+        completedTasks: [],
+        fullyGrown: false,
+      };
+      await AsyncStorage.setItem(
+        CURRENT_ENTLING_KEY,
+        JSON.stringify(currentEntling)
+      );
+      setEntling(currentEntling);
+    }
+
+    // 2. Load or generate daily tasks
+    const savedTasksRaw = await AsyncStorage.getItem(DAILY_TASKS_KEY);
+    if (savedTasksRaw) {
+      const { day, tasks: savedTasks } = JSON.parse(savedTasksRaw);
+      if (day === date) {
+        setTasks(savedTasks);
         return;
       }
     }
 
-    //New Entinling
-    const newEntling: Entling = {
-      id: uuidv4(),
-      createdAt: new Date().toISOString(),
-      completedTasks: [],
-      fullyGrown: false,
-    };
-
-    await AsyncStorage.setItem(CURRENT_ENTLING_KEY, JSON.stringify(newEntling));
-    setEntling(newEntling);
-
-    const dailyTasks = getDailyTasks(date);
-    setTasks(dailyTasks);
+    // New day
+    const newTasks = getDailyTasks(date);
+    setTasks(newTasks);
+    await AsyncStorage.setItem(
+      DAILY_TASKS_KEY,
+      JSON.stringify({ day: date, tasks: newTasks })
+    );
   };
 
   const completeTask = async (index: number) => {
+    if (!entling || entling.fullyGrown) return;
+
     const updatedTasks = [...tasks];
     const taskDone = updatedTasks.splice(index, 1)[0];
     setTasks(updatedTasks);
-
-    if (!entling) return;
 
     const updatedEntling: Entling = {
       ...entling,
       completedTasks: [...entling.completedTasks, taskDone],
     };
 
+    // Save updated daily tasks
+    await AsyncStorage.setItem(
+      DAILY_TASKS_KEY,
+      JSON.stringify({ day: today, tasks: updatedTasks })
+    );
+
+    // Fully grown logic
     const isFullyGrown = updatedEntling.completedTasks.length >= 3;
     if (isFullyGrown) {
       updatedEntling.fullyGrown = true;
@@ -97,20 +138,26 @@ export default function Taskling(){
       const farm = farmRaw ? JSON.parse(farmRaw) : [];
       farm.push(updatedEntling);
       await AsyncStorage.setItem(ENTLING_FARM_KEY, JSON.stringify(farm));
+
+      Alert.alert('🎉 Your Entling has fully grown!');
     }
 
-    await AsyncStorage.setItem(CURRENT_ENTLING_KEY, JSON.stringify(updatedEntling));
+    // Save current entling
+    await AsyncStorage.setItem(
+      CURRENT_ENTLING_KEY,
+      JSON.stringify(updatedEntling)
+    );
     setEntling(updatedEntling);
   };
 
-  const growthStage = tasks.length === 3
+  const growthStage =
+    tasks.length === 3
       ? '🌱'
-    : tasks.length === 2
-    ? '🌿'
-    : tasks.length === 1
-    ? '🌿✨'
-    : '🧍‍♂️ Entling!';
-
+      : tasks.length === 2
+      ? '🌿'
+      : tasks.length === 1
+      ? '🌿✨'
+      : '🧍‍♂️ Entling!';
 
   return (
     <View style={styles.container}>
@@ -135,7 +182,7 @@ export default function Taskling(){
     </View>
   );
 }
-    
+
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, backgroundColor: '#f6fff7' },
   title: {

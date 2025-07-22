@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import TaskFarmer from '../Tabs/TaskFarmer';
 import HomeDashboard from './HomeDashboard';
 
 function BrainWaker() {
@@ -71,6 +72,8 @@ export default function App() {
             </Text>
           </View>
         );
+        case 'farm':
+          return <TaskFarmer />;
       case null:
         return <HomeDashboard />;
     }
@@ -99,6 +102,9 @@ export default function App() {
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => openTab('reminders')}>
             <Text>🔔 Reminders</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menuItem} onPress={() => openTab('farm')}>
+            <Text>🌿 Visit Entling Farm</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => openTab('wins')}>
             <Text>🏆 Wins</Text>
