@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Taskling from '../features/Taskling';
 import HomeDashboard from './HomeDashboard';
-import Taskling from './Taskling';
 import ConnectTab from './connect';
 import TaskFarmer from './farm';
 
@@ -74,10 +74,10 @@ export default function App() {
             </Text>
           </View>
         );
+        case 'taskling':
+          return <Taskling />;
         case 'connect':
           return <ConnectTab />
-        case 'taskling':
-          return <Taskling />
         case 'farm':
           return <TaskFarmer />;
       case null:
