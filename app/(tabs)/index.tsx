@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Taskling from '../features/Taskling';
-import HomeDashboard from './HomeDashboard';
+import HomeDashboard from './Auding-You';
 import ConnectTab from './connect';
 import TaskFarmer from './farm';
 
