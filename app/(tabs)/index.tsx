@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Taskling from '../features/Taskling';
 import HomeDashboard from './Auding-You';
-import ConnectTab from './connect';
+import ConnectTab from './Connect';
 import TaskFarmer from './farm';
 
 function BrainWaker() {

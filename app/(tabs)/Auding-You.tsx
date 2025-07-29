@@ -1,73 +1,137 @@
-import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useState } from 'react';
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
-export default function HomeDashboard() {
-    return (
-        <View style={styles.container}>
-            <Text style={styles.header}> Welcome back!</Text>
+export default function AudingYouTab() {
+  const [mood, setMood] = useState('🙂');
+  const [overwhelm, setOverwhelm] = useState(3);
+  const [mentalLoad, setMentalLoad] = useState('');
+  const [mentalNotes, setMentalNotes] = useState<string[]>([]);
+  const [intent, setIntent] = useState('');
 
-            {/* Latest Win */}
-            <View style={styles.card}>
-                <Text style={styles.title}>🏆 Your Latest Victory!</Text>
-                <Text style={styles.text}>
-                    "Flowchart"
-                </Text>
-                <TouchableOpacity>
-                    <Text style={styles.link}>View all wins.</Text>
-                </TouchableOpacity>
-            </View>
+  const handleAddNote = () => {
+    if (mentalLoad.trim()) {
+      setMentalNotes([...mentalNotes, mentalLoad.trim()]);
+      setMentalLoad('');
+    }
+  };
 
-            {/* Suggested Content */}
-            <View style={styles.card}>
-                <Text style={styles.title}>🎯 For You</Text>
-                <Text style={styles.text}>
-                    "How to handle stress"
-                </Text>
-                <TouchableOpacity>
-                    <Text style={styles.link}>Read more...</Text>
-                </TouchableOpacity>
-            </View>
+  const handleReset = () => {
+    Alert.alert('🪺 Reset', 'You are enough. Take a breath.');
+  };
 
-            {/* Entling Progress */}
-            <View style={styles.card}>
-                <Text style={styles.title}>🌱 Entling Progress</Text>
-                <Text style={styles.text}> 2 out of 3 tasks completed today!</Text>
-                <View style={styles.progressBar}>
-                    <View style={[styles.progressFill, { width: '66%' }]} />
-                    </View>
-                    <TouchableOpacity></TouchableOpacity>
-                </View>
-            </View>
-    );
+  return (
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.header}>🧠 Auding You</Text>
+
+      <View style={styles.card}>
+        <Text style={styles.label}>How are you feeling today?</Text>
+        <Text style={styles.bigEmoji}>{mood}</Text>
+        <View style={styles.emojiRow}>
+          {['😞', '😐', '🙂', '😊', '😄'].map((emoji) => (
+            <TouchableOpacity key={emoji} onPress={() => setMood(emoji)}>
+              <Text style={styles.emoji}>{emoji}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
+      <View style={styles.card}>
+        <Text style={styles.label}>Mental Load</Text>
+        <TextInput
+          style={styles.input}
+          value={mentalLoad}
+          onChangeText={setMentalLoad}
+          placeholder="Something on your mind..."
+          onSubmitEditing={handleAddNote}
+        />
+        {mentalNotes.map((note, i) => (
+          <Text key={i} style={styles.noteItem}>• {note}</Text>
+        ))}
+      </View>
+
+      <View style={styles.card}>
+        <Text style={styles.label}>What would make today okay?</Text>
+        <TextInput
+          style={styles.input}
+          value={intent}
+          onChangeText={setIntent}
+          placeholder="An intention, wish, or goal..."
+        />
+      </View>
+
+      <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
+        <Text style={styles.resetText}>🪺 I need a reset</Text>
+      </TouchableOpacity>
+    </ScrollView>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: { padding: 16 },
-    header: { fontSize: 24, fontWeight: 'bold', marginBottom: 16 },
-    card: {
-        backgroundColor: '#fff',
-        borderRadius: 12,
-        padding: 16,
-        marginBottom: 20,
-        shadowColor: '#000',
-        shadowOpacity: 0.05,
-        shadowOffset: {width: 0, height: 2},
-        shadowRadius: 4,
-        elevation: 2,
-    },
-    title: {fontSize: 18, fontWeight: '600', marginBottom: 6},
-    text: { fontSize: 16, marginBottom: 8},
-    link: {color: '#5A67D8', fontWeight: '500'},
-    progressBar: {
-        height: 10,
-        backgroundColor: '#e0e0e0',
-        borderRadius: 5,
-        overflow: 'hidden',
-        marginTop: 4,
-        marginBottom: 10,
-    },
-    progressFill: {
-        height: '100%',
-        backgroundColor: '#5A67D8',
-    },
+  container: {
+    padding: 16,
+    backgroundColor: '#fff9f5',
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  card: {
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 1,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+  bigEmoji: {
+    fontSize: 42,
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  emojiRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  emoji: {
+    fontSize: 28,
+  },
+  input: {
+    backgroundColor: '#f2f2f2',
+    padding: 10,
+    borderRadius: 8,
+    fontSize: 16,
+  },
+  noteItem: {
+    marginTop: 8,
+    fontSize: 15,
+    color: '#333',
+  },
+  resetButton: {
+    backgroundColor: '#d6e4ff',
+    borderRadius: 10,
+    padding: 14,
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  resetText: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
 });

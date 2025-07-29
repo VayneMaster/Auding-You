@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from 'expo-router';
 import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
@@ -8,6 +9,8 @@ type Entling ={
     completedTasks: string[];
     fullyGrown: boolean;
 };
+
+const router = useRouter();
 
 export default function TaskFarmer() {
     const [farm, setFarm ] = useState<Entling[]>([]);
