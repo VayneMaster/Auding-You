@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Taskling from '../features/Taskling';
-import HomeDashboard from './Auding-You';
 import ConnectTab from './Connect';
 import TaskFarmer from './Farm';
+import Home from './Home';
 
 function BrainWaker() {
   const [showAnswer, setShowAnswer] = useState(false);
@@ -81,7 +81,7 @@ export default function App() {
         case 'Farm':
           return <TaskFarmer />;
       case null:
-        return <HomeDashboard />;
+        return <Home openTab={openTab} />
     }
   };
 
