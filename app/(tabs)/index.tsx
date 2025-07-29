@@ -76,7 +76,7 @@ export default function App() {
         );
         case 'taskling':
           return <Taskling />;
-        case 'connect':
+        case 'Connect':
           return <ConnectTab />
         case 'farm':
           return <TaskFarmer />;
