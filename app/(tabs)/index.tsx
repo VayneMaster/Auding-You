@@ -3,7 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Taskling from '../features/Taskling';
 import HomeDashboard from './Auding-You';
 import ConnectTab from './Connect';
-import TaskFarmer from './farm';
+import TaskFarmer from './Farm';
 
 function BrainWaker() {
   const [showAnswer, setShowAnswer] = useState(false);
@@ -78,7 +78,7 @@ export default function App() {
           return <Taskling />;
         case 'Connect':
           return <ConnectTab />
-        case 'farm':
+        case 'Farm':
           return <TaskFarmer />;
       case null:
         return <HomeDashboard />;
