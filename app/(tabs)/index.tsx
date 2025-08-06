@@ -3,8 +3,6 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Taskling from '../features/Taskling';
 import ConnectTab from './Connect';
 import TaskFarmer from './Farm';
-import Home from './Home';
-
 
 function BrainWaker() {
   const [showAnswer, setShowAnswer] = useState(false);
@@ -46,9 +44,16 @@ export default function App() {
   };
 
   const renderTabContent = () => {
+    if (menuVisible) return null;
     switch (activeTab) {
       case 'brain':
         return <BrainWaker />;
+      case 'taskling':
+        return <Taskling />;
+      case 'Connect':
+        return <ConnectTab />;
+      case 'Farm':
+        return <TaskFarmer />;
       case 'hobbies':
         return (
           <View style={styles.contentBox}>
@@ -75,14 +80,30 @@ export default function App() {
             </Text>
           </View>
         );
-        case 'taskling':
-          return <Taskling />;
-        case 'Connect':
-          return <ConnectTab />
-        case 'Farm':
-          return <TaskFarmer />;
-      case null:
-        return <Home openTab={openTab} />
+
+      default:
+        return (
+          <View style={styles.homeContainer}>
+            <Text style={styles.title}>👋 Welcome to Auding You</Text>
+            <Text style={styles.subtitle}>Choose what to focus on today:</Text>
+
+            <TouchableOpacity style={styles.button} onPress={() => openTab('taskling')}>
+              <Text style={styles.buttonText}>🌼 Open Taskling</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.button} onPress={() => openTab('Farm')}>
+              <Text style={styles.buttonText}>🌿 Go to Entling Farm</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.button} onPress={() => openTab('Connect')}>
+              <Text style={styles.buttonText}>💬 Open Connect</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.button} onPress={() => openTab('brain')}>
+              <Text style={styles.buttonText}>🧩 Start Brain Waker</Text>
+            </TouchableOpacity>
+          </View>
+        );
     }
   };
 
@@ -96,7 +117,9 @@ export default function App() {
       </View>
 
       {/* Welcome message */}
+      {!menuVisible && activeTab === null && (
       <Text style={styles.welcome}>Nice seeing you!</Text>
+      )}
 
       {/* Menu */}
       {menuVisible && (
@@ -110,7 +133,7 @@ export default function App() {
           <TouchableOpacity style={styles.menuItem} onPress={() => openTab('reminders')}>
             <Text>🔔 Reminders</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => openTab('farm')}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => openTab('Farm')}>
             <Text>🌿 Visit Entling Farm</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => openTab('taskling')}>
@@ -180,5 +203,30 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
     fontWeight: 'bold',
+  },
+  // Added styles from Home.tsx
+  homeContainer: {
+    padding: 20,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 12,
+  },
+  subtitle: {
+    fontSize: 16,
+    marginBottom: 20,
+  },
+  button: {
+    padding: 14,
+    backgroundColor: '#e2e8f0',
+    borderRadius: 10,
+    marginBottom: 12,
+  },
+  buttonText: {
+    fontSize: 16,
+    textAlign: 'center',
   },
 });
