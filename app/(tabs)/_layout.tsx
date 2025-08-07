@@ -36,20 +36,75 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="brainwaker"
+        options={{
+          title: 'Brainwaker',
+          tabBarIcon: ({ color }) => (
+            <IconSymbol name="puzzlepiece.fill" color={color} size={28} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="wins"
+        options={{
+          title: 'Wins',
+          tabBarIcon: ({ color }) => (
+            <IconSymbol name="trophy.fill" color={color} size={28} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="farm"
+        options={{
+          title: 'Entling Farm',
+          tabBarIcon: ({ color }) => (
+            <IconSymbol name="leaf.fill" color={color} size={28} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="connect"
+        options={{
+          title: 'Connect',
+          tabBarIcon: ({ color }) => (
+            <IconSymbol name="message.fill" color={color} size={28} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="taskling"
+        options={{
+          title: 'Taskling',
+          tabBarIcon: ({ color }) => (
+            <IconSymbol name="checkmark.circle.fill" color={color} size={28} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="hobbies"
+        options={{
+          title: 'Hobbies',
+          tabBarIcon: ({ color }) => (
+            <IconSymbol name="cart.fill" color={color} size={28} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="reminders"
+        options={{
+          title: 'Reminders',
+          tabBarIcon: ({ color }) => (
+            <IconSymbol name="bell.fill" color={color} size={28} />
+          ),
+        }}
+      />
+      {/* If you have a Research tab as well, keep it here */}
+      <Tabs.Screen
         name="Research"
         options={{
           title: 'Research',
           tabBarIcon: ({ color }) => (
             <IconSymbol name="magnifyingglass" color={color} size={28} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="Connect"
-        options={{
-          title: 'Connect',
-          tabBarIcon: ({ color }) => (
-            <IconSymbol name="message.fill" color={color} size={28} />
           ),
         }}
       />
