@@ -38,7 +38,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="brainwaker"
         options={{
-          title: 'Brainwaker',
+          title: 'Brain Waker',
           tabBarIcon: ({ color }) => (
             <IconSymbol name="puzzlepiece.fill" color={color} size={28} />
           ),
@@ -49,7 +49,7 @@ export default function TabLayout() {
         options={{
           title: 'Wins',
           tabBarIcon: ({ color }) => (
-            <IconSymbol name="trophy.fill" color={color} size={28} />
+            <IconSymbol name="rosette" color={color} size={28} />
           ),
         }}
       />
@@ -85,7 +85,7 @@ export default function TabLayout() {
         options={{
           title: 'Hobbies',
           tabBarIcon: ({ color }) => (
-            <IconSymbol name="cart.fill" color={color} size={28} />
+            <IconSymbol name="star.fill" color={color} size={28} />
           ),
         }}
       />
@@ -98,7 +98,6 @@ export default function TabLayout() {
           ),
         }}
       />
-      {/* If you have a Research tab as well, keep it here */}
       <Tabs.Screen
         name="Research"
         options={{
