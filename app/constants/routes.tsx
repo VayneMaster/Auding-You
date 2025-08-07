@@ -1,5 +1,4 @@
 export const validPaths = [
-  "/",
   "/brainwaker",
   "/wins",
   "/farm",
