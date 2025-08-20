@@ -11,7 +11,7 @@ export const validPaths = [
   // extra screens (root-level files)
   "/brainwaker",
   "/wins",
-  "taskling",
+  "/taskling",
   "/hobbies",
   "/reminders",
 ] as const;
