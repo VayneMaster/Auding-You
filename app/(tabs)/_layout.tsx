@@ -1,11 +1,12 @@
+// app/(tabs)/_layout.tsx
 import { Tabs } from 'expo-router';
 import React from 'react';
 import { Platform } from 'react-native';
 
+import { Colors } from '@/app/constants/Colors';
 import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function TabLayout() {
@@ -19,13 +20,12 @@ export default function TabLayout() {
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
-          ios: {
-            position: 'absolute',
-          },
+          ios: { position: 'absolute' },
           default: {},
         }),
       }}
     >
+      {/* Visible tabs ONLY */}
       <Tabs.Screen
         name="index"
         options={{
@@ -36,34 +36,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="brainwaker"
-        options={{
-          title: 'Brain Waker',
-          tabBarIcon: ({ color }) => (
-            <IconSymbol name="puzzlepiece.fill" color={color} size={28} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="wins"
-        options={{
-          title: 'Wins',
-          tabBarIcon: ({ color }) => (
-            <IconSymbol name="rosette" color={color} size={28} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="farm"
-        options={{
-          title: 'Entling Farm',
-          tabBarIcon: ({ color }) => (
-            <IconSymbol name="leaf.fill" color={color} size={28} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="connect"
+        name="Connect"
         options={{
           title: 'Connect',
           tabBarIcon: ({ color }) => (
@@ -72,29 +45,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="taskling"
+        name="farm"
         options={{
-          title: 'Taskling',
+          title: 'Farm',
           tabBarIcon: ({ color }) => (
-            <IconSymbol name="checkmark.circle.fill" color={color} size={28} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="hobbies"
-        options={{
-          title: 'Hobbies',
-          tabBarIcon: ({ color }) => (
-            <IconSymbol name="star.fill" color={color} size={28} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="reminders"
-        options={{
-          title: 'Reminders',
-          tabBarIcon: ({ color }) => (
-            <IconSymbol name="bell.fill" color={color} size={28} />
+            <IconSymbol name="leaf.fill" color={color} size={28} />
           ),
         }}
       />
