@@ -1,29 +1,25 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/useColorScheme';
+// app/_layout.tsx
+import { DrawerToggleButton } from '@react-navigation/drawer';
+import { Drawer } from 'expo-router/drawer';
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  if (!loaded) {
-    // Async font loading only occurs in development.
-    return null;
-  }
-
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <Drawer
+      screenOptions={{
+        headerShown: true,
+        // This puts the “hamburger” in the header so the menu is hidden until opened
+        headerLeft: () => <DrawerToggleButton />,
+      }}
+    >
+      {/* Your tab navigator (route group) becomes a single Drawer screen */}
+      <Drawer.Screen
+        name="(tabs)"
+        options={{ title: 'App' }}
+      />
+
+      {/* (Optional) add non-tab pages here to show them in the Drawer too:
+      <Drawer.Screen name="settings" options={{ title: 'Settings' }} />
+      */}
+    </Drawer>
   );
 }
