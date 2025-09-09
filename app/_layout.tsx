@@ -16,11 +16,16 @@ export default function RootLayout() {
           headerLeft: () => <DrawerToggleButton />,
         }}
       >
-        {/* ✅ Only mount the (tabs) group in the Drawer */}
-        <Drawer.Screen
-          name="(tabs)"
-          options={{ title: 'App' }}
-        />
+        {/* Main app = tabs */}
+        <Drawer.Screen name="(tabs)" options={{ title: 'Home' }} />
+
+        {/* Extra pages (hidden group) */}
+        <Drawer.Screen name="(hidden)/Brainwaker" options={{ title: 'Brainwaker' }} />
+        <Drawer.Screen name="(hidden)/Taskling" options={{ title: 'Taskling' }} />
+        <Drawer.Screen name="(hidden)/Wins" options={{ title: 'Wins' }} />
+        <Drawer.Screen name="(hidden)/Tasks" options={{ title: 'Tasks' }} />
+        <Drawer.Screen name="(hidden)/Hobbies" options={{ title: 'Hobbies' }} />
+        <Drawer.Screen name="(hidden)/Reminders" options={{ title: 'Reminders' }} />
       </Drawer>
       <StatusBar style="auto" />
     </ThemeProvider>
