@@ -1,3 +1,3 @@
 // app/wins.tsx
-import Wins from './features/Wins';
+import Wins from './(hidden)/features/Wins';
 export default Wins;
