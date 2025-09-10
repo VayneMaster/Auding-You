@@ -20,12 +20,12 @@ export default function RootLayout() {
         <Drawer.Screen name="(tabs)" options={{ title: 'Home' }} />
 
         {/* Extra pages (hidden group) */}
-        <Drawer.Screen name="(hidden)/Brainwaker" options={{ title: 'Brainwaker' }} />
-        <Drawer.Screen name="(hidden)/Taskling" options={{ title: 'Taskling' }} />
-        <Drawer.Screen name="(hidden)/Wins" options={{ title: 'Wins' }} />
+        <Drawer.Screen name="(hidden)/brainwaker" options={{ title: 'Brainwaker' }} />
+        <Drawer.Screen name="(hidden)/taskling" options={{ title: 'Taskling' }} />
+        <Drawer.Screen name="(hidden)/wins" options={{ title: 'Wins' }} />
         <Drawer.Screen name="(hidden)/Tasks" options={{ title: 'Tasks' }} />
-        <Drawer.Screen name="(hidden)/Hobbies" options={{ title: 'Hobbies' }} />
-        <Drawer.Screen name="(hidden)/Reminders" options={{ title: 'Reminders' }} />
+        <Drawer.Screen name="(hidden)/hobbies" options={{ title: 'Hobbies' }} />
+        <Drawer.Screen name="(hidden)/reminders" options={{ title: 'Reminders' }} />
       </Drawer>
       <StatusBar style="auto" />
     </ThemeProvider>

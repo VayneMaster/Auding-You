@@ -2,7 +2,7 @@
 import { router } from "expo-router";
 import React from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity } from "react-native";
-import { paths } from "../constants/routes";
+import { paths } from "../../.expo/constants/routes";
 
 export default function HomeScreen() {
   return (
