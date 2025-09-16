@@ -1,71 +1,76 @@
 // app/(tabs)/index.tsx
-import { router } from "expo-router";
+import { Stack, router } from "expo-router";
 import React from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { paths } from "../../.expo/constants/routes";
 
 export default function HomeScreen() {
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>🏠 Home Dashboard</Text>
+    <>
+      {/* Invisible stack header (keeps routing happy) */}
+      <Stack.Screen options={{ headerShown: false }} />
 
-      {/* Quick links */}
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => router.push(paths.connect)}
-      >
-        <Text style={styles.buttonText}>💬 Go to Connect</Text>
-      </TouchableOpacity>
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.title}>🏠 Home Dashboard</Text>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => router.push(paths.farm)}
-      >
-        <Text style={styles.buttonText}>🌿 Go to Entling Farm</Text>
-      </TouchableOpacity>
+        {/* Quick links */}
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push(paths.connect)}
+        >
+          <Text style={styles.buttonText}>💬 Go to Connect</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => router.push(paths.research)}
-      >
-        <Text style={styles.buttonText}>🔬 Go to Research</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push(paths.farm)}
+        >
+          <Text style={styles.buttonText}>🌿 Go to Entling Farm</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => router.push(paths.brainwaker)}
-      >
-        <Text style={styles.buttonText}>🧩 Play Brain Waker</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push(paths.research)}
+        >
+          <Text style={styles.buttonText}>🔬 Go to Research</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => router.push(paths.taskling)}
-      >
-        <Text style={styles.buttonText}>📝 Open Taskling</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push(paths.brainwaker)}
+        >
+          <Text style={styles.buttonText}>🧩 Play Brain Waker</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => router.push(paths.wins)}
-      >
-        <Text style={styles.buttonText}>🏆 View Wins</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push(paths.taskling)}
+        >
+          <Text style={styles.buttonText}>📝 Open Taskling</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => router.push(paths.hobbies)}
-      >
-        <Text style={styles.buttonText}>🎨 Explore Hobbies</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push(paths.wins)}
+        >
+          <Text style={styles.buttonText}>🏆 View Wins</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => router.push(paths.reminders)}
-      >
-        <Text style={styles.buttonText}>⏰ Check Reminders</Text>
-      </TouchableOpacity>
-    </ScrollView>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push(paths.hobbies)}
+        >
+          <Text style={styles.buttonText}>🎨 Explore Hobbies</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push(paths.reminders)}
+        >
+          <Text style={styles.buttonText}>⏰ Check Reminders</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </>
   );
 }
 
