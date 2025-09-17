@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, FlatList, Linking, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { searchADHDAndAutism } from "../lib/ducksearchengine";
+import { searchADHDAndAutism } from "../../.expo/lib/ducksearchengine";
 
 export default function ResearchSearch() {
   const [query, setQuery] = useState("");

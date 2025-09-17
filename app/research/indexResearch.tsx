@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FlatList, Linking, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { fetchResearchArticles } from "../lib/fetchResearch";
+import { fetchResearchArticles } from "../../.expo/lib/fetchResearch";
 
 export default function ResearchFeed() {
   const [articles, setArticles] = useState<any[]>([]);
