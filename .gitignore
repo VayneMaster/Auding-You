@@ -37,5 +37,11 @@ yarn-error.*
 *.tsbuildinfo
 
 app-example
-.expo/
+# Ignore everything in .expo by default
+.expo/*
+
+# BUT keep these subfolders tracked
+!.expo/constants/
+!.expo/types/
+!.expo/lib/
 

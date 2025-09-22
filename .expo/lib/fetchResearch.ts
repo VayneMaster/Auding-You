@@ -7,26 +7,10 @@ export interface Article {
   contentSnippet: string;
 }
 
-interface RSSItem {
-  title: string;
-  link: string;
-  pubDate: string;
-  description?: string;
-}
-
-interface RSSChannel {
-  item: RSSItem[] | RSSItem;
-}
-
-interface RSS {
-  rss: {
-    channel: RSSChannel;
-  };
-}
-
 // Trusted ADHD / Autism RSS feeds
 const FEEDS = [
   "https://www.additudemag.com/feed/",
+  "https://chadd.org/feed/", // Example Atom feed
   "https://www.autism.org.uk/rss/news.xml",
 ];
 
@@ -42,18 +26,29 @@ export async function fetchResearchArticles(): Promise<Article[]> {
     try {
       const res = await fetch(feedUrl);
       const xml = await res.text();
+      const data = parser.parse(xml);
 
-      const json: RSS = parser.parse(xml);
+      // Handle both RSS and Atom
+      let items: any[] = [];
 
-      let items = json.rss.channel.item;
-      if (!Array.isArray(items)) items = [items];
+      if (data?.rss?.channel?.item) {
+        // RSS case
+        items = Array.isArray(data.rss.channel.item)
+          ? data.rss.channel.item
+          : [data.rss.channel.item];
+      } else if (data?.feed?.entry) {
+        // Atom case
+        items = Array.isArray(data.feed.entry)
+          ? data.feed.entry
+          : [data.feed.entry];
+      }
 
-      items.forEach((item) => {
+      items.forEach((item: any) => {
         articles.push({
           title: item.title,
-          link: item.link,
-          pubDate: item.pubDate,
-          contentSnippet: item.description || "",
+          link: item.link?.href || item.link, // Atom uses <link href="...">
+          pubDate: item.pubDate || item.updated || new Date().toISOString(),
+          contentSnippet: item.description || item.summary || "",
         });
       });
     } catch (err) {
@@ -61,7 +56,10 @@ export async function fetchResearchArticles(): Promise<Article[]> {
     }
   }
 
-  articles.sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
+  // Sort newest first
+  articles.sort(
+    (a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime()
+  );
 
   return articles;
 }
