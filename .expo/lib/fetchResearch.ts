@@ -11,7 +11,6 @@ export interface Article {
 const FEEDS = [
   "https://www.additudemag.com/feed/",
   "https://chadd.org/feed/", // Example Atom feed
-  "https://www.autism.org.uk/rss/news.xml",
 ];
 
 export async function fetchResearchArticles(): Promise<Article[]> {
@@ -28,20 +27,42 @@ export async function fetchResearchArticles(): Promise<Article[]> {
       const xml = await res.text();
       const data = parser.parse(xml);
 
-      // Handle both RSS and Atom
-      let items: any[] = [];
 
-      if (data?.rss?.channel?.item) {
-        // RSS case
-        items = Array.isArray(data.rss.channel.item)
-          ? data.rss.channel.item
-          : [data.rss.channel.item];
-      } else if (data?.feed?.entry) {
-        // Atom case
-        items = Array.isArray(data.feed.entry)
-          ? data.feed.entry
-          : [data.feed.entry];
-      }
+let items: any[] = [];
+
+if (data?.rss?.channel?.item) {
+  // RSS
+  items = Array.isArray(data.rss.channel.item)
+    ? data.rss.channel.item
+    : [data.rss.channel.item];
+} else if (data?.feed?.entry) {
+  // Atom
+  items = Array.isArray(data.feed.entry)
+    ? data.feed.entry
+    : [data.feed.entry];
+}
+
+for (const item of items) {
+  articles.push({
+    title: item.title ?? "",
+    link:
+      item.link?.href ||
+      item.link ||
+      (item.enclosure && item.enclosure.url) ||
+      "",
+    pubDate:
+      item.pubDate ||
+      item.updated ||
+      item.published ||
+      new Date().toISOString(),
+    contentSnippet:
+      item.description ||
+      item.summary ||
+      item.content ||
+      "",
+  });
+}
+
 
       items.forEach((item: any) => {
         articles.push({
