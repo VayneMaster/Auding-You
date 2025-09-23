@@ -18,7 +18,7 @@ export default function ResearchSearch() {
   const handleSearch = async () => {
     if (!query.trim()) return;
     const res = await searchADHDAndAutism(query);
-    setResults(res);
+    setResults(res.slice(0, 16)); //16 results
   };
 
   return (

@@ -15,7 +15,6 @@ const FEEDS = [
 
 export async function fetchResearchArticles(): Promise<Article[]> {
   const articles: Article[] = [];
-
   const parser = new XMLParser({
     ignoreAttributes: false,
     attributeNamePrefix: "",
@@ -27,49 +26,36 @@ export async function fetchResearchArticles(): Promise<Article[]> {
       const xml = await res.text();
       const data = parser.parse(xml);
 
+      let items: any[] = [];
 
-let items: any[] = [];
+      if (data?.rss?.channel?.item) {
+        // RSS
+        items = Array.isArray(data.rss.channel.item)
+          ? data.rss.channel.item
+          : [data.rss.channel.item];
+      } else if (data?.feed?.entry) {
+        // Atom
+        items = Array.isArray(data.feed.entry)
+          ? data.feed.entry
+          : [data.feed.entry];
+      }
 
-if (data?.rss?.channel?.item) {
-  // RSS
-  items = Array.isArray(data.rss.channel.item)
-    ? data.rss.channel.item
-    : [data.rss.channel.item];
-} else if (data?.feed?.entry) {
-  // Atom
-  items = Array.isArray(data.feed.entry)
-    ? data.feed.entry
-    : [data.feed.entry];
-}
-
-for (const item of items) {
-  articles.push({
-    title: item.title ?? "",
-    link:
-      item.link?.href ||
-      item.link ||
-      (item.enclosure && item.enclosure.url) ||
-      "",
-    pubDate:
-      item.pubDate ||
-      item.updated ||
-      item.published ||
-      new Date().toISOString(),
-    contentSnippet:
-      item.description ||
-      item.summary ||
-      item.content ||
-      "",
-  });
-}
-
-
-      items.forEach((item: any) => {
+      // Only take first 2 articles per feed
+      items.slice(0, 2).forEach((item: any) => {
         articles.push({
-          title: item.title,
-          link: item.link?.href || item.link, // Atom uses <link href="...">
-          pubDate: item.pubDate || item.updated || new Date().toISOString(),
-          contentSnippet: item.description || item.summary || "",
+          title: item.title ?? "",
+          link:
+            item.link?.href ||
+            item.link ||
+            (item.enclosure && item.enclosure.url) ||
+            "",
+          pubDate:
+            item.pubDate ||
+            item.updated ||
+            item.published ||
+            new Date().toISOString(),
+          contentSnippet:
+            item.description || item.summary || item.content || "",
         });
       });
     } catch (err) {
@@ -77,7 +63,7 @@ for (const item of items) {
     }
   }
 
-  // Sort newest first
+  // Sort newest first across all feeds
   articles.sort(
     (a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime()
   );

@@ -1,21 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FlatList, Linking, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { RefreshControl } from "react-native-gesture-handler";
 import { fetchResearchArticles } from "../../.expo/lib/fetchResearch";
 
 export default function ResearchFeed() {
   const [articles, setArticles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const loadArticles = async () => {
+    const data = await fetchResearchArticles();
+    setArticles(data);
+  };
 
   useEffect(() => {
-    fetchResearchArticles()
-      .then(setArticles)
-      .finally(() => setLoading(false));
+    loadArticles().finally(() => setLoading(false));
+  }, []);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await loadArticles();
+    setRefreshing(false);
   }, []);
 
   if (loading) {
     return (
       <View style={styles.center}>
-        <Text>Loading articles...</Text>
+      <Text>Loading articles...</Text>
       </View>
     );
   }
@@ -34,6 +45,7 @@ export default function ResearchFeed() {
         </TouchableOpacity>
       )}
       contentContainerStyle={{ padding: 16 }}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
     />
   );
 }
