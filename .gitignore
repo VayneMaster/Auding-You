@@ -45,3 +45,6 @@ app-example
 !.expo/types/
 !.expo/lib/
 
+#Prevent API keys leaking
+.env
+
